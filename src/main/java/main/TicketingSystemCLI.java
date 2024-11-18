@@ -7,6 +7,10 @@ public class TicketingSystemCLI {
     private static Configuration configuration;
 
     public static void main(String[] args) {
+        setupConfiguration();
+
+    }
+    private static void setupConfiguration() {
 
         Scanner scanner = new Scanner(System.in);
         System.out.println("Welcome to the Real-Time Event Ticketing System");
@@ -26,5 +30,6 @@ public class TicketingSystemCLI {
         System.out.println("Configuration Completed!");
 
         configuration = new Configuration(totalTickets, ticketReleaseRate, customerRetrievalRate, maxTicketCapacity);
+
     }
 }
