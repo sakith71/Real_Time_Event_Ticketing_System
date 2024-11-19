@@ -1,11 +1,13 @@
 package main;
 
 import config.Configuration;
+import model.TicketPool;
 
 import java.util.Scanner;
 
 public class TicketingSystemCLI {
     private static Configuration configuration;
+    private static TicketPool ticketPool;
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -62,6 +64,7 @@ public class TicketingSystemCLI {
 
         configuration = new Configuration(totalTickets, ticketReleaseRate, customerRetrievalRate, maxTicketCapacity);
         System.out.println("Configuration setup completed!");
+        ticketPool = new TicketPool(maxTicketCapacity);
     }
 
     private static int getValidatedInput(Scanner scanner, String errorMessage) {
