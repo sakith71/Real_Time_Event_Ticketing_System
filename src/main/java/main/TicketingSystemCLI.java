@@ -2,7 +2,6 @@ package main;
 
 import config.Configuration;
 
-import java.io.IOException;
 import java.util.Scanner;
 
 public class TicketingSystemCLI {
@@ -12,48 +11,75 @@ public class TicketingSystemCLI {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Welcome to the Real-Time Event Ticketing System");
+        setupConfiguration(scanner);
 
-        while (true) {
-            System.out.println("\nMenu:");
-            System.out.println("1. Setup Configuration");
-            System.out.println("2. Save Configuration");
-            System.out.println("3. Load Configuration");
-            System.out.println("4. View Configuration");
-            System.out.println("5. Exit");
-            System.out.print("Choose an option: ");
-
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
-
-            switch (choice) {
-                case 1 -> setupConfiguration(scanner);
-                case 2 -> saveConfiguration(scanner);
-                case 3 -> loadConfiguration(scanner);
-                case 4 -> viewConfiguration();
-                case 5 -> {
-                    System.out.println("Exiting...");
-                    return;
-                }
-                default -> System.out.println("Invalid choice. Try again.");
-            }
-        }
+//        while (true) {
+//            System.out.println("\nMenu:");
+//            System.out.println("1. Setup Configuration");
+//            System.out.println("2. Save Configuration");
+//            System.out.println("3. Load Configuration");
+//            System.out.println("4. View Configuration");
+//            System.out.println("5. Exit");
+//            System.out.print("Choose an option: ");
+//
+//            int choice = scanner.nextInt();
+//            scanner.nextLine(); // Consume newline
+//
+//            switch (choice) {
+//                case 1 -> setupConfiguration(scanner);
+//                case 2 -> saveConfiguration(scanner);
+//                case 3 -> loadConfiguration(scanner);
+//                case 4 -> viewConfiguration();
+//                case 5 -> {
+//                    System.out.println("Exiting...");
+//                    return;
+//                }
+//                default -> System.out.println("Invalid choice. Try again.");
+//            }
+//        }
     }
 
     private static void setupConfiguration(Scanner scanner) {
-        System.out.println("Enter total tickets:");
-        int totalTickets = scanner.nextInt();
+        int maxTicketCapacity;
+        System.out.print("Enter total tickets: ");
+        int totalTickets = getValidatedInput(scanner, "Total tickets must be a non-negative integer: ");
 
-        System.out.println("Enter ticket release rate:");
-        int ticketReleaseRate = scanner.nextInt();
+        System.out.print("Enter ticket release rate: ");
+        int ticketReleaseRate = getValidatedInput(scanner, "Ticket release rate must be a non-negative integer: ");
 
-        System.out.println("Enter customer retrieval rate:");
-        int customerRetrievalRate = scanner.nextInt();
+        System.out.print("Enter customer retrieval rate: ");
+        int customerRetrievalRate = getValidatedInput(scanner, "Customer retrieval rate must be a non-negative integer: ");
 
-        System.out.println("Enter maximum ticket capacity:");
-        int maxTicketCapacity = scanner.nextInt();
+        System.out.print("Enter maximum ticket capacity: ");
+        while (true){
+            maxTicketCapacity = getValidatedInput(scanner, "Maximum ticket capacity must be a non-negative integer: ");
+            if(maxTicketCapacity > totalTickets){
+                System.out.print("Maximum ticket capacity cannot be greater than the total ticket capacity: ");
+            }
+            else break;
+        }
+
 
         configuration = new Configuration(totalTickets, ticketReleaseRate, customerRetrievalRate, maxTicketCapacity);
         System.out.println("Configuration setup completed!");
+    }
+
+    private static int getValidatedInput(Scanner scanner, String errorMessage) {
+        int value;
+        while (true) {
+            try {
+                value = scanner.nextInt();
+                if (value < 0) {
+                    System.out.print(errorMessage);
+                } else {
+                    break;
+                }
+            } catch (Exception e) {
+                System.out.print("Invalid input. Please enter a valid integer: ");
+                scanner.next(); // Clear the invalid input
+            }
+        }
+        return value;
     }
 
     private static void saveConfiguration(Scanner scanner) {
