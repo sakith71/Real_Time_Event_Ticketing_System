@@ -1,6 +1,8 @@
 package main;
 
 import config.Configuration;
+import entities.Customer;
+import entities.Vendor;
 import model.TicketPool;
 
 import java.util.Scanner;
@@ -14,6 +16,7 @@ public class TicketingSystemCLI {
 
         System.out.println("Welcome to the Real-Time Event Ticketing System");
         setupConfiguration(scanner);
+        startSystem();
 
 //        while (true) {
 //            System.out.println("\nMenu:");
@@ -43,6 +46,7 @@ public class TicketingSystemCLI {
 
     private static void setupConfiguration(Scanner scanner) {
         int maxTicketCapacity;
+
         System.out.print("Enter total tickets: ");
         int totalTickets = getValidatedInput(scanner, "Total tickets must be a non-negative integer: ");
 
@@ -65,6 +69,25 @@ public class TicketingSystemCLI {
         configuration = new Configuration(totalTickets, ticketReleaseRate, customerRetrievalRate, maxTicketCapacity);
         System.out.println("Configuration setup completed!");
         ticketPool = new TicketPool(maxTicketCapacity);
+    }
+
+    private static void startSystem() {
+        int numVendors = 2;  // Assuming 2 vendors
+        int numCustomers = 3; // Assuming 3 customers
+
+        // Start vendor threads
+        for (int i = 0; i < numVendors; i++) {
+            Vendor vendor = new Vendor(ticketPool, configuration.getTicketReleaseRate(), "Vendor-" + (i + 1));
+            Thread vendorThread = new Thread(vendor);
+            vendorThread.start();
+        }
+
+        // Start customer threads
+        for (int i = 0; i < numCustomers; i++) {
+            Customer customer = new Customer(ticketPool, configuration.getCustomerRetrievalRate(), "Customer-" + (i + 1));
+            Thread customerThread = new Thread(customer);
+            customerThread.start();
+        }
     }
 
     private static int getValidatedInput(Scanner scanner, String errorMessage) {
