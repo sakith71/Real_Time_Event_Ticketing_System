@@ -26,4 +26,20 @@ public class TicketPool {
         System.out.println(count + " tickets added. Current tickets available: " + tickets.size());
         notifyAll();
     }
+
+    // Synchronized method to remove tickets
+    public synchronized void removeTicket(String customerId) {
+        while (tickets.isEmpty()) {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+//                return null;
+            }
+        }
+        String ticket = tickets.poll();
+        System.out.println("Ticket sold: " + ticket + ". Tickets left: " + tickets.size());
+        notifyAll();
+//        return ticket;
+    }
 }
