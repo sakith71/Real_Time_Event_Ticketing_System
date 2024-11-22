@@ -15,6 +15,14 @@ public class Vendor implements Runnable {
 
     @Override
     public void run() {
-
+        for (int i = 0; i < ticketReleaseRate; i++) {
+            ticketPool.addTickets(ticketReleaseRate, vendorId);
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
+            }
+        }
     }
 }
