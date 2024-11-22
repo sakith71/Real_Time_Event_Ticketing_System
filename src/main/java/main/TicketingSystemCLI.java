@@ -65,7 +65,6 @@ public class TicketingSystemCLI {
             else break;
         }
 
-
         configuration = new Configuration(totalTickets, ticketReleaseRate, customerRetrievalRate, maxTicketCapacity);
         System.out.println("Configuration setup completed!");
         ticketPool = new TicketPool(maxTicketCapacity);
