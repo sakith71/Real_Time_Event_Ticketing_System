@@ -27,7 +27,6 @@ public class TicketPool {
         notifyAll();
     }
 
-
     // Synchronized method to remove tickets
     public synchronized void removeTicket(String customerId) {
         while (tickets.isEmpty()) {
