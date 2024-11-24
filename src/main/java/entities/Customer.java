@@ -4,25 +4,23 @@ import model.TicketPool;
 
 public class Customer implements Runnable {
     private final TicketPool ticketPool;
-    private final int retrievalRate;
-    private final String customerId;
+    private final int customerRetrievalRate;
 
-    public Customer(TicketPool ticketPool, int retrievalRate, String customerId) {
+    public Customer(TicketPool ticketPool, int customerRetrievalRate) {
         this.ticketPool = ticketPool;
-        this.retrievalRate = retrievalRate;
-        this.customerId = customerId;
+        this.customerRetrievalRate = customerRetrievalRate;
+
     }
 
     @Override
     public void run() {
-        for (int i = 0; i < retrievalRate; i++) {
-            ticketPool.removeTicket(customerId);
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                break;
+        try {
+            while (true) {
+                ticketPool.removeTicket();
+                Thread.sleep(customerRetrievalRate);
             }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
     }
 }

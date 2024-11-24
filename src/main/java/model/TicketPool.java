@@ -12,34 +12,34 @@ public class TicketPool {
     }
 
     // Synchronized method to add tickets
-    public synchronized void addTickets(int count, String vendorId) {
-        while (tickets.size() + count > maxCapacity) {
+    public synchronized void addTickets(String ticket) {
+        while (tickets.size() >= maxCapacity) {
             try {
+                System.out.println("Ticket pool full. Vendor is waiting...");
                 wait();
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
         }
-        for (int i = 0; i < count; i++) {
-            tickets.add("Ticket-" + (tickets.size() + 1));
-        }
-        System.out.println(count + " tickets added. Current tickets available: " + tickets.size());
+        tickets.offer(ticket);
+        System.out.println("Ticket added: " + ticket + " | Total Tickets: " + tickets.size());
         notifyAll();
     }
 
     // Synchronized method to remove tickets
-    public synchronized void removeTicket(String customerId) {
+    public synchronized String removeTicket() {
         while (tickets.isEmpty()) {
             try {
+                System.out.println("Not enough tickets. Customer is waiting...");
                 wait();
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
-//                return null;
+                return null;
             }
         }
         String ticket = tickets.poll();
-        System.out.println("Ticket sold: " + ticket + ". Tickets left: " + tickets.size());
+        System.out.println("Ticket purchased: " + ticket + " | Remaining Tickets: " + tickets.size());
         notifyAll();
-//        return ticket;
+        return ticket;
     }
 }

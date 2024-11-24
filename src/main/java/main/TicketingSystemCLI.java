@@ -50,10 +50,10 @@ public class TicketingSystemCLI {
         System.out.print("Enter total tickets: ");
         int totalTickets = getValidatedInput(scanner, "Total tickets must be a non-negative integer: ");
 
-        System.out.print("Enter ticket release rate: ");
+        System.out.print("Enter ticket release rate: "); // The ticketReleaseRate defines how many tickets a vendor (producer) adds to the ticket pool in a single operation (typically per unit of time, e.g., per second).
         int ticketReleaseRate = getValidatedInput(scanner, "Ticket release rate must be a non-negative integer: ");
 
-        System.out.print("Enter customer retrieval rate: ");
+        System.out.print("Enter customer retrieval rate: "); // customerRetrievalRate defines how many tickets a customer (consumer) attempts to remove (purchase) from the ticket pool in a single operation (typically per unit of time, e.g., per second).
         int customerRetrievalRate = getValidatedInput(scanner, "Customer retrieval rate must be a non-negative integer: ");
 
         System.out.print("Enter maximum ticket capacity: ");
@@ -71,22 +71,15 @@ public class TicketingSystemCLI {
     }
 
     private static void startSystem() {
-        int numVendors = 2;  // Assuming 2 vendors
-        int numCustomers = 3; // Assuming 3 customers
-
         // Start vendor threads
-        for (int i = 0; i < numVendors; i++) {
-            Vendor vendor = new Vendor(ticketPool, configuration.getTicketReleaseRate(), "Vendor-" + (i + 1));
-            Thread vendorThread = new Thread(vendor);
-            vendorThread.start();
-        }
+        Vendor vendor = new Vendor(ticketPool, configuration.getTicketReleaseRate(),configuration.getTotalTickets());
+        Thread vendorThread = new Thread(vendor);
+        vendorThread.start();
 
         // Start customer threads
-        for (int i = 0; i < numCustomers; i++) {
-            Customer customer = new Customer(ticketPool, configuration.getCustomerRetrievalRate(), "Customer-" + (i + 1));
-            Thread customerThread = new Thread(customer);
-            customerThread.start();
-        }
+        Customer customer = new Customer(ticketPool, configuration.getCustomerRetrievalRate());
+        Thread customerThread = new Thread(customer);
+        customerThread.start();
     }
 
     private static int getValidatedInput(Scanner scanner, String errorMessage) {
