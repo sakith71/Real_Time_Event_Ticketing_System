@@ -50,7 +50,7 @@ public class Configuration implements Serializable {
     }
 
     public void saveToFile(String filename) {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Gson gson = new Gson();
         try (FileWriter writer = new FileWriter(filename)) {
             gson.toJson(this, writer);
             System.out.println("Configuration saved successfully to " + filename);

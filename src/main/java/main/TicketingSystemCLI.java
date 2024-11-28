@@ -5,6 +5,7 @@ import entities.Customer;
 import entities.Vendor;
 import model.TicketPool;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class TicketingSystemCLI {
@@ -15,33 +16,48 @@ public class TicketingSystemCLI {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Welcome to the Real-Time Event Ticketing System");
-        setupConfiguration(scanner);
-        startSystem();
+//        setupConfiguration(scanner);
+//        startSystem();
+        boolean isValid = true;
+        while (isValid) {
+            System.out.println("\nMenu:");
+            System.out.println("1. Setup Configuration");
+            System.out.println("2. Save Configuration");
+            System.out.println("3. Load Configuration");
+            System.out.println("4. View Configuration");
+            System.out.println("5. Exit");
+            System.out.print("Choose an option: ");
 
-//        while (true) {
-//            System.out.println("\nMenu:");
-//            System.out.println("1. Setup Configuration");
-//            System.out.println("2. Save Configuration");
-//            System.out.println("3. Load Configuration");
-//            System.out.println("4. View Configuration");
-//            System.out.println("5. Exit");
-//            System.out.print("Choose an option: ");
-//
-//            int choice = scanner.nextInt();
-//            scanner.nextLine(); // Consume newline
-//
-//            switch (choice) {
-//                case 1 -> setupConfiguration(scanner);
-//                case 2 -> saveConfiguration(scanner);
-//                case 3 -> loadConfiguration(scanner);
-//                case 4 -> viewConfiguration();
-//                case 5 -> {
-//                    System.out.println("Exiting...");
-//                    return;
-//                }
-//                default -> System.out.println("Invalid choice. Try again.");
-//            }
-//        }
+            try {
+                Scanner scanner1 = new Scanner(System.in);
+                int choice = scanner1.nextInt();
+//                scanner.nextLine(); // Consume newline
+                switch (choice) {
+                    case 1:
+                        setupConfiguration(scanner);
+                        startSystem();
+                        break;
+                    case 2:
+                        saveConfiguration(scanner);
+                        break;
+                    case 3:
+                        loadConfiguration(scanner);
+                        break;
+                    case 4:
+                        viewConfiguration();
+                        break;
+                    case 5:
+                        System.out.println("Exiting program.....");
+                        isValid = false;
+                        break;
+                    default:
+                        System.out.println("Invalid choice. Please enter a number from 1 to 5.");
+                        break;
+                }
+            }catch (InputMismatchException ex) {
+                System.out.println("WARNING!..... Please enter a valid integer.");
+            }
+        }
     }
 
     private static void setupConfiguration(Scanner scanner) {
@@ -68,18 +84,25 @@ public class TicketingSystemCLI {
         configuration = new Configuration(totalTickets, ticketReleaseRate, customerRetrievalRate, maxTicketCapacity);
         System.out.println("Configuration setup completed!");
         ticketPool = new TicketPool(maxTicketCapacity);
+
     }
 
     private static void startSystem() {
         // Start vendor threads
         Vendor vendor = new Vendor(ticketPool, configuration.getTicketReleaseRate(),configuration.getTotalTickets());
-        Thread vendorThread = new Thread(vendor);
-        vendorThread.start();
+        Thread vendorThread1 = new Thread(vendor);
+        Thread vendorThread2 = new Thread(vendor);
+        vendorThread1.start();
+        vendorThread2.start();
 
         // Start customer threads
         Customer customer = new Customer(ticketPool, configuration.getCustomerRetrievalRate());
-        Thread customerThread = new Thread(customer);
-        customerThread.start();
+        Thread customerThread1 = new Thread(customer);
+        Thread customerThread2 = new Thread(customer);
+        Thread customerThread3 = new Thread(customer);
+        customerThread1.start();
+        customerThread2.start();
+        customerThread3.start();
     }
 
     private static int getValidatedInput(Scanner scanner, String errorMessage) {
@@ -105,23 +128,19 @@ public class TicketingSystemCLI {
             System.out.println("No configuration to save. Setup configuration first.");
             return;
         }
-
-        System.out.print("Enter filename to save configuration: ");
-        String filename = scanner.nextLine();
-
+//        System.out.print("Enter filename to save configuration: ");
+//        String filename = scanner.nextLine();
         try {
-            configuration.saveToFile(filename);
-            System.out.println("Configuration saved to " + filename);
+            configuration.saveToFile("ticket_config.json");
+            System.out.println("Configuration saved successfully");
         } catch (Exception e) {
             System.out.println("Error saving configuration: " + e.getMessage());
-
         }
     }
 
     private static void loadConfiguration(Scanner scanner) {
         System.out.print("Enter filename to load configuration: ");
         String filename = scanner.nextLine();
-
         try {
             configuration = Configuration.loadFromFile(filename);
             System.out.println("Configuration loaded from " + filename);
