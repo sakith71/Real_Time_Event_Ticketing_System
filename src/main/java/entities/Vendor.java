@@ -6,7 +6,6 @@ public class Vendor implements Runnable {
     private final TicketPool ticketPool;
     private final int ticketReleaseRate;
     private final int totalTickets;
-    private int ticketCount = 0;
 
     public Vendor(TicketPool ticketPool, int ticketReleaseRate, int totalTickets) {
         this.ticketPool = ticketPool;
@@ -17,8 +16,8 @@ public class Vendor implements Runnable {
     @Override
     public void run() {
         try {
-            while (ticketCount < totalTickets) {
-                String ticket = "Ticket-" + (++ticketCount);
+            for (int i = 1; i <= totalTickets; i++) {
+                Ticket ticket = new Ticket(i);
                 ticketPool.addTickets(ticket);
                 Thread.sleep(ticketReleaseRate);
             }

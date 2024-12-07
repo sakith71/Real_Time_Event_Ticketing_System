@@ -9,13 +9,12 @@ public class Customer implements Runnable {
     public Customer(TicketPool ticketPool, int customerRetrievalRate) {
         this.ticketPool = ticketPool;
         this.customerRetrievalRate = customerRetrievalRate;
-
     }
 
     @Override
     public void run() {
         try {
-            while (true) {
+            while (!Thread.currentThread().isInterrupted()) {
                 ticketPool.removeTicket();
                 Thread.sleep(customerRetrievalRate);
             }
