@@ -113,7 +113,7 @@ public class TicketingSystemCLI {
         int numCustomers = getValidatedInput(scanner, "Number of customers must be a positive integer: ");
 
         // Start vendor threads
-        for (int i = 0; i < numVendors; i++) {
+        for (int i = 1; i <= numVendors; i++) {
             int ticketsPerVendor = configuration.getTotalTickets() / numVendors;
             if (i == numVendors - 1) {
                 ticketsPerVendor += configuration.getTotalTickets() % numVendors;
@@ -125,7 +125,7 @@ public class TicketingSystemCLI {
         }
 
         // Start customer threads
-        for (int i = 0; i < numCustomers; i++) {
+        for (int i = 1; i <= numCustomers; i++) {
             Customer customer = new Customer(ticketPool, configuration.getCustomerRetrievalRate());
             Thread customerThread = new Thread(customer, "Customer-" + i);
             customerThreads.add(customerThread);
@@ -147,6 +147,7 @@ public class TicketingSystemCLI {
                 vendorThread.interrupt();
             }
         }
+        vendorThreads.clear();
 
         // Interrupt customer threads
         for (Thread customerThread : customerThreads) {
@@ -154,6 +155,7 @@ public class TicketingSystemCLI {
                 customerThread.interrupt();
             }
         }
+        customerThreads.clear();
 
         isSystemRunning = false;
         System.out.println("All threads stopped.");
